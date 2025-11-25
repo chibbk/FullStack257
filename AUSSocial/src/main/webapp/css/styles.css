@@ -96,15 +96,37 @@ main.content {
   padding-top: 1px;           
   box-sizing: border-box;
 }
+/* Side tab becomes a bottom tab - Chihab */
+@media (min-width: 992px) and (max-width: 1300px) {
+  main.content .row.g-4 {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+
+  main.content .col-lg-8 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  /* Sidebar takes full width like the feed, but it goes underneath*/
+  main.content .col-lg-4,
+  main.content .sidetab {
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-top: 1rem;
+  }
+}
+
 .content {
   margin-left: 240px;
   flex-grow: 1;
 }
- @media (min-width: 992px){
-    main.content, main.content.container, main.content.container-fluid {
-      margin-left: 260px; 
-    }
+@media (min-width: 992px){
+  main.content, main.content.container, main.content.container-fluid {
+    margin-left: 260px; 
   }
+}
 @media (max-width: 768px) {
   .content {
     margin-left: 0;
@@ -156,24 +178,6 @@ body {
   color: red;
 }
 
-
-
-@media (min-width: 992px) and (max-width: 1100px) {
-  .sidetab {
-    width: 100% !important;
-    margin-left: 0 !important;
-    margin-top: 1rem;
-  }
-
-  .sidetab .card {
-    width: 100%;
-  }
-
-  /* Allow the feed column to take full available space */
-  main.content .col-lg-8 {
-    width: 100% !important;
-  }
-}
 
 
 /* create page styling Ahmed */
