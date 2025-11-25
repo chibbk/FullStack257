@@ -16,12 +16,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // mode: "login" or "signup"
   let mode = "login";
 
-    // Using JSON to save User data locally
   function getSavedAccount() {
     return JSON.parse(sessionStorage.getItem("aus_account") || "null");
   }
+//logout
+   function handleLogout() {
+   
+    sessionStorage.removeItem("aus_user");
+    sessionStorage.removeItem("isLoggedIn");
 
+    // Reset form UI
+    form.reset();
+    setMode(getSavedAccount() ? "login" : "signup");
 
+    // Show the modal again
+    modal.style.display = "flex";
+   }
+  
   if (!getSavedAccount()) {
     mode = "signup";
   }
@@ -142,4 +153,22 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.style.display = "none";
     }
   });
+    // Attach logout behaviour to all navbars
+  const logoutButtons = document.querySelectorAll(".logout-link");
+  logoutButtons.forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      // If clicked from inside the mobile offcanvas, close it
+      const mobileMenu = document.getElementById("mobileMenu");
+      if (mobileMenu && typeof bootstrap !== "undefined" && bootstrap.Offcanvas) {
+        const offcanvasInstance = bootstrap.Offcanvas.getInstance(mobileMenu);
+        if (offcanvasInstance) offcanvasInstance.hide();
+      }
+
+      handleLogout();
+    });
+  });
+
 });
+

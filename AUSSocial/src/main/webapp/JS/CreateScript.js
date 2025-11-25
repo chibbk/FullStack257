@@ -3,6 +3,8 @@
     const $$ = (sel, root=document) => root.querySelector(sel);
     const $$$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
+    const currentUser = JSON.parse(sessionStorage.getItem('aus_user') || '{}');
+
     const form = $$('#createForm');
     const titleEl = $$('#title');
     const bodyEl = $$('#body');
@@ -79,20 +81,24 @@
     form.addEventListener('submit', (e)=>{
       e.preventDefault();
       if (!titleEl.value.trim() || !bodyEl.value.trim()) return;
-      const post = {
-        id: crypto.randomUUID(),
-        title: titleEl.value.trim(),
-        body: bodyEl.value.trim(),
-        category: catEl.value,
-        price: catEl.value==='Sell' ? Number(priceEl.value||0) : undefined,
-        eventDate: catEl.value==='Event' ? (dateEl.value||undefined) : undefined,
-        eventTime: catEl.value==='Event' ? (timeEl.value||undefined) : undefined,
-        location: catEl.value==='Event' ? (locEl.value||undefined) : undefined,
-        building: catEl.value === 'Event' ? (buildingEl.value || undefined) : undefined,
-        tags: [...tags],
-        likes: 0,
-        createdAt: Date.now()
-      };
+   const post = {
+    id: crypto.randomUUID(),
+    title: titleEl.value.trim(),
+    body: bodyEl.value.trim(),
+    category: catEl.value,
+    price: catEl.value === 'Sell' ? Number(priceEl.value || 0) : undefined,
+    eventDate: catEl.value === 'Event' ? (dateEl.value || undefined) : undefined,
+    eventTime: catEl.value === 'Event' ? (timeEl.value || undefined) : undefined,
+    location: catEl.value === 'Event' ? (locEl.value || undefined) : undefined,
+    building: catEl.value === 'Event' ? (buildingEl.value || undefined) : undefined,
+    tags: [...tags],
+    likes: 0,
+    createdAt: Date.now(),
+
+
+    authorEmail: currentUser.email,
+    authorName: currentUser.name
+  };
 
       const done = (imageData)=>{
         if (imageData) post.imageData = imageData;

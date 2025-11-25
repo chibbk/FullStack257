@@ -24,6 +24,23 @@ const FEED_CONTAINER = document.getElementById('feedList');
       sessionStorage.setItem('aus_posts', JSON.stringify(arr));
     }
 
+    async function deletePostById(id) {
+      // When backend exists, do something like:
+      // await fetch(`/api/posts/${id}`, { method: 'DELETE', credentials: 'include' });
+
+      const arr = JSON.parse(sessionStorage.getItem('aus_posts') || '[]');
+      const filtered = arr.filter(x => x.id !== id);
+      sessionStorage.setItem('aus_posts', JSON.stringify(filtered));
+
+      // Keep profile posts in sync too
+      const profArr = JSON.parse(sessionStorage.getItem('aus_profile_posts') || '[]');
+      const filteredProf = profArr.filter(x => x.id !== id);
+      sessionStorage.setItem('aus_profile_posts', JSON.stringify(filteredProf));
+
+      // Update in-memory list used by this page
+      posts = posts.filter(x => x.id !== id);
+    }
+
     function escapeHtml(s){
       return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m] || m));
     }
@@ -51,12 +68,22 @@ const FEED_CONTAINER = document.getElementById('feedList');
       (page*PAGE_SIZE < posts.length) ? LOAD_MORE.classList.remove('d-none') : LOAD_MORE.classList.add('d-none');
     }
 
-    // === Post card with Like + Comments ===
+    // === Post card with Like + Comments - Ahmed Mohsen, Chihab (delete feature) ===
     function postCard(p){
       // defaults
       p.likes = typeof p.likes === 'number' ? p.likes : 0;
       p.liked = !!p.liked;
+      //for delete feature - Chihab
       p.comments = Array.isArray(p.comments) ? p.comments : [];
+
+      const currentUser = getUser();
+      const canDelete =
+        currentUser &&
+        currentUser.email &&
+        p.authorEmail &&
+        currentUser.email === p.authorEmail;
+
+      
 
       const card = document.createElement('div');
       card.className = 'card shadow-sm';
@@ -66,6 +93,9 @@ const FEED_CONTAINER = document.getElementById('feedList');
 
       const heartIcon = p.liked ? 'bi-heart-fill' : 'bi-heart';
       const commentCount = p.comments.length;
+       const deleteMarkup = canDelete
+        ? `<button class="btn btn-sm btn-outline-danger ms-2 delete-btn">Delete</button>`
+        : '';
 
       card.innerHTML = `
         ${imgMarkup}
@@ -75,7 +105,10 @@ const FEED_CONTAINER = document.getElementById('feedList');
               <h5 class="card-title mb-1">${escapeHtml(p.title)}</h5>
               <div class="text-muted small">${escapeHtml(p.category||'Post')} • ${timeAgo(p.createdAt)}</div>
             </div>
-            <div class="d-flex flex-wrap gap-1">${tagsMarkup}</div>
+            <div class="d-flex align-items-start gap-2">
+              <div class="d-flex flex-wrap gap-1">${tagsMarkup}</div>
+              ${deleteMarkup}
+            </div>
           </div>
 
           <p class="card-text mt-2">${escapeHtml(p.body)}</p>
@@ -168,6 +201,21 @@ const FEED_CONTAINER = document.getElementById('feedList');
         persist(p);
         renderComments();
       });
+
+      // Delete event listener - CHihab
+      const delBtn = card.querySelector('.delete-btn');
+      if (delBtn) {
+        delBtn.addEventListener('click', async () => {
+          
+
+          await deletePostById(p.id);
+
+          FEED_CONTAINER.innerHTML = '';
+          page = 0;
+          renderSlice();
+        });
+      }
+
 
       return card;
     }
