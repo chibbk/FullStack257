@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<!-- Desktop Sidebar - Chihab-->
+<nav class="sidebar d-none d-lg-flex flex-column p-3">
+  <h3 id="navhead">AUS Social</h3>
+  <ul class="nav flex-column">
+    <li class="nav-item"><a href="home.html" class="nav-link">Home</a></li>
+    <li class="nav-item"><a href="#" id="openSearch" class="nav-link">Search</a></li>
+    <li class="nav-item"><a href="create.html" class="nav-link">Create</a></li>
+    <li class="nav-item"><a href="announcements.html" class="nav-link">Announcements</a></li>
+    <li class="nav-item"><a href="map.html" class="nav-link">Map</a></li>
+    <li class="nav-item mt-auto"><a href="profile.html" class="nav-link active">Profile</a></li>
+  </ul>
+</nav>
+
+<!-- hamburger menu (phone) - chihab -->
+<nav class="navbar fixed-bottom d-flex d-md-none navbar-light bg-white shadow-sm px-3">
+  <a class="navbar-brand fw-bold" href="home.html">AUS Social</a>
+
+  <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</nav>
+
+<!-- offcanvas menu - chihab, reference:  -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">Menu</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <a class="nav-link" href="home.html">Home</a>
+    <a class="nav-link" href="#" id="openSearch">Search</a>
+    <a class="nav-link" href="create.html">Create</a>
+    <a class="nav-link" href="announcements.html">Announcements</a>
+    <a class="nav-link" href="map.html">Map</a>
+    <a class="nav-link" href="profile.html">Profile</a>
+  </div>
+</div>
+<!-- Medium screens bottom nav - Chihab-->
+      <nav class="bottom-nav d-none d-md-flex d-lg-none justify-content-around align-items-center">
+        <a href="home.html" class="nav-item">Home</a>
+        <a href="#" id="openSearch" class="nav-item">Search</a>
+        <a href="create.html" class="nav-item create ">Create</a>
+        <a href="announcements.html" class="nav-item ">Announcements</a>
+        <a href="map.html" class="nav-item ">Map</a>
+        <a href="profile.html" class="nav-item active">Profile</a>
+      </nav>
+<!-- this is where the profile is centered - chihab-->
+<main class="profile-wrapper">
+  <section class="profile-header">
+    <div class="profile-head-left">
+      <img id="pfp" src="images/DefaultPfp.jpg" class="profile-pic">
+      <div class="profile-meta">
+        <h2 id="profileName" class="mb-1"></h2>
+        <div class="profile-stats">
+          <span class="stat"><strong id="followerCount">0</strong> followers</span>
+        </div>
+      </div>
+    </div>
+
+    <button id="editProfileBtn" class="edit-btn" aria-haspopup="dialog" aria-controls="editProfileModal">
+      Edit Profile
+    </button>
+  </section>
+
+  <section class="bio-section">
+    <h5 class="bio-title">Bio</h5>
+    <p id="bioText" class="bio-content"></p>
+  </section>
+
+    <section class="profile-posts mt-4">
+    <h5 class="mb-3">Your Posts</h5>
+    <div id="profilePosts"></div>
+  </section>
+
+</main>
+
+<!-- Sign in modal - chihab -->
+  <div id="modal" class="modal">
+  <form id="popupForm" class="modalForm">
+    <h2 id="authTitle">Log In</h2>
+    <p id="authSubtitle" class="small" style="margin-bottom: 0.75rem;"></p>
+
+    <div id="nameGroup">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" class="form-control" required>
+    </div>
+
+    <label for="email">AUS Email:</label>
+    <input type="email" id="email" name="email" class="form-control" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" class="form-control" required>
+
+    <p class="small" style="margin: 0.75rem 0 1rem;">
+      <span id="authToggleText">Don’t have an account?</span>
+      <button type="button" id="switchAuthMode" class="btn btn-link p-0" style="font-size: 0.9rem;">
+        Sign up
+      </button>
+    </p>
+
+    <button type="submit" id="authSubmitBtn">Log In</button>
+  </form>
+</div>
+
+<!-- profile edit - chihab -->
+<div id="editProfileModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="editProfileTitle">
+  <form id="editForm" class="modalForm">
+    <h2 id="editProfileTitle">Edit Profile</h2>
+    <img id="pfpPreview" src="images/DefaultPfp.jpg" class="profile-pic" style="width:90px;height:90px;border-radius:50%;object-fit:cover;margin-bottom:12px;">
+
+    <label for="uploadPfp">Upload New Profile Picture:</label>
+    <input type="file" id="uploadPfp" accept="image/*">
+
+    <label for="editBio">Edit Bio:</label>
+    <textarea id="editBio" rows="5" placeholder="Write something about yourself..."></textarea>
+    <button type="button" id="resetPfpBtn" class="btn-secondary-lite" style="margin-top:10px;">
+  Reset to Default Picture
+</button>
+
+    <div class="modal-actions">
+      <button type="button" id="cancelEdit" class="btn-secondary-lite">Cancel</button>
+      <button type="submit">Save</button>
+    </div>
+  </form>
+</div>
+
+
+<!-- Search Modal - Chihab -->
+<div id="searchModal" class="modal" style="justify-content:flex-start;align-items:flex-start;">
+  <div class="modal-section" style="margin-left:260px; margin-top:40px; max-width:420px; width:420px;">
+    <div class="modal-content p-3" style="height:75vh;">
+      <h5 class="mb-3">Search Users</h5>
+      <input id="searchInput" class="form-control mb-3" placeholder="Search usernames...">
+      <div id="searchResults" class="overflow-auto" style="height:calc(100% - 90px);"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Scripts -->
+<script src="JS/FormScript.js"></script> 
+<script src="JS/ProfileScript.js"></script> 
+<script src="Js/SearchScript.js"></script>
+</body>
+</html>

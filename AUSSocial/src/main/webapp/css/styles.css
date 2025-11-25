@@ -1,0 +1,432 @@
+main.content {
+  background: transparent;
+  padding-top: 1px;           
+  box-sizing: border-box;
+}
+
+
+
+
+/* Sign up Form and Modals - Chihab */
+.modal {
+    top:0;
+    right:0;
+    padding-top: 1rem;
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* dark semi-transparent background */
+    justify-content: center;
+    z-index: 1;
+
+}
+
+.modalForm {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    width: 90%;       
+    max-height: 90vh;
+    max-width:560px;    
+    display: flex;
+     overflow-y:auto;
+    flex-direction: column;
+    justify-content: center;
+    animation: slide 0.5s ease;
+}
+
+#switchAuthMode {
+  background-color: transparent;
+  color: blue;
+
+}
+
+.modalForm input{
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+
+/*https://css-tricks.com/almanac/properties/a/animation/*/
+@keyframes slide {
+  from {transform: translateY(20%); opacity: 0;}
+  to {transform: translateY(0); opacity: 1;}
+}
+
+
+
+
+/* Form styling */
+.modalForm input {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+.modalForm button {
+  padding: 0.67rem;
+  font-size: 1rem;
+  border: none;
+  background-color: black;
+  color: white;
+  border-radius: 0.67rem;
+  cursor: pointer; /*https://www.w3schools.com/cssref/pr_class_cursor.php*/
+}
+
+
+/* Sidebar (Desktop) - Chihab */
+.sidebar {
+  width:  260px;
+  height: 100%;
+  position: fixed;
+  background-color:black;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.sidebar .nav-link {
+  color: #bbb;
+  font-size: 1.1rem;
+  padding: 10px 0;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  color: #fff;
+  background-color: #121212;
+  border-radius: 8px;
+}
+
+/* Main content area */
+.content {
+  margin-left: 240px;
+  flex-grow: 1;
+}
+ @media (min-width: 992px){
+    main.content, main.content.container, main.content.container-fluid {
+      margin-left: 260px; 
+    }
+  }
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+  }
+}
+
+/* Small homepage carousel */
+.carousel-img-small {
+  margin-top: 1.5%;
+  height: 260px;            /* about the height of 2 stacked posts */
+  object-fit: cover;        /* crops images to fit perfectly */
+  border-radius: 12px;      /* optional: consistent with your card style */
+}
+
+
+/*bottom nav - chihab - fix karim*/
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 65px;
+  background: black;
+  z-index: 1000;
+}
+
+body {
+  padding-bottom: 65px;
+}
+
+
+.bottom-nav .nav-item {
+  color: antiquewhite;
+  font-size: 1.7rem;
+  text-decoration: none;
+}
+
+.bottom-nav .nav-item:hover {
+  color: indianred;
+}
+
+.bottom-nav .create {
+  font-size: 2rem;
+}
+
+#navhead{
+  color: red;
+}
+/* create page styling Ahmed */
+ .preview { border:1px dashed #ccc; border-radius:12px; padding:12px; }
+    .img-thumb { max-height: 220px; object-fit: cover; border-radius:12px; }
+    .chip { display:inline-flex; align-items:center; gap:6px; padding:.25rem .5rem; border-radius:999px; background:#f1f1f1; margin:0 .25rem .25rem 0; }
+    .chip button { border:none; background:transparent; line-height:1; }
+/* home page styling Ahmed */
+/* Red heart like style */
+    .like-btn {
+      border: none !important;
+      background: none !important;
+      font-size: 1.35rem;
+      line-height: 1;
+      transition: transform 0.15s ease;
+      padding: .25rem .35rem;
+    }
+    .like-btn:hover { transform: scale(1.08); }
+    .like-btn .bi-heart,
+    .like-btn .bi-heart-fill { color: #dc3545; }
+
+    /* Comments UI */
+    .comment-toggle {
+      border: none;
+      background: transparent;
+      font-size: .95rem;
+      color: #6c757d;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .25rem .5rem;
+    }
+    .comment-list {
+      border-top: 1px solid #eee;
+      margin-top: .5rem;
+      padding-top: .5rem;
+    }
+    .comment-item + .comment-item { border-top: 1px dashed #eee; }
+    .comment-item .meta { color: #6c757d; font-size: .85rem; }
+    .add-comment {
+      display: flex; gap: .5rem; margin-top: .5rem;
+    }
+    .add-comment input {
+      flex: 1;
+    }
+
+/* ANNOUNCEMENTS PAGE STYLING - Karim*/
+
+/* main area for announcements */
+.announcement-wrapper {
+  margin-left:  260px;      
+  padding: 2rem 2rem 5rem;
+  max-width: 1100px;
+}
+
+
+@media (max-width: 767.98px) {
+  .announcement-wrapper {
+    margin-left: 0;
+    padding: 1.5rem 1rem 5.5rem;
+  }
+}
+
+.ann-header h2 {
+  font-weight: 600;
+}
+
+
+.ann-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Profile page - Chihab */
+.profile-wrapper {
+  padding: 2rem 2rem 5.5rem;
+  max-width: 750px;
+  margin: 0 auto;                 
+}
+
+
+@media (min-width: 992px){
+  .profile-wrapper {
+    margin-left: calc( 260px + (100vw -  260px - 750px)/2);
+  }
+}
+
+@media (max-width: 768.px) {
+  .profile-wrapper {
+    margin-left: 0;
+    padding: 1.5rem 1rem 6.5rem;
+  }
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.profile-head-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-pic {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e5e5;
+  background: #f7f7f7;
+}
+
+.profile-meta h2 {
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.profile-stats {
+  color: #666;
+  font-size: 1rem;
+}
+
+.edit-btn {
+  padding: 0.5rem 1rem;
+  background-color: black;
+  color: white;
+  border-radius: 0.6rem;
+  border: none;
+  cursor: pointer;
+  transition: opacity .15s ease;
+}
+.edit-btn:hover { opacity: 0.9; }
+
+.bio-section {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.bio-title {
+  font-weight: 600;
+  margin-bottom: .25rem;
+}
+
+.bio-content {
+  color: #444;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Positioning modals in the center - Chihab and Karim */
+.modal {
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+ @media (max-width: 992px)
+{
+  .modalForm {
+  height:100%;
+  max-width: 560px;
+  width: 90%;
+ 
+} 
+}
+@media (min-width: 992px)
+{
+  .modalForm {
+  max-width: 560px;
+  width: 90%;
+ 
+} 
+}
+
+#openSearch {
+  cursor: pointer;
+}
+
+/* Search bar modal - Chihab */
+
+/* Large screen sidebar*/
+@media(min-width: 992px){
+  #searchModal .modal-section{
+    margin-left:260px; 
+    margin-top:40px;
+    max-width:420px;
+    width:420px;
+  }
+}
+
+/* Medium screens bottom navbar - Chihab */
+@media(min-width: 768px) and (max-width: 991px){
+  #searchModal .modal-section{
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:auto; 
+    width:85%;
+    max-width:420px;
+  }
+}
+
+/* Small screen hamburgers */
+@media(max-width: 767px){
+  #searchModal .modal-section{
+    margin-left:auto;
+    margin-right:auto;
+    margin-top:120px; 
+    width:90%;
+    max-width:420px;
+  }
+}
+
+
+/* interactive map - Chihab */
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+
+
+
+.map-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+}
+
+.map-spot {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #e60000;     
+  border-radius: 50%;
+  border: 2px solid white;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(0,0,0,.5);
+}
+
+/* Reference: https://css-tricks.com/tooltip-best-practices/ - Chihab*/
+.map-spot::after {
+  content: attr(data-label);
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.75);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.map-bg{
+  background: #2e1e1e; 
+  color: #fff;
+}
+
