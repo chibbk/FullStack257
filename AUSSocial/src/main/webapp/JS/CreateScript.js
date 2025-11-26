@@ -77,29 +77,20 @@
       if (e.target.tagName==='BUTTON') { const i=+e.target.dataset.i; tags.splice(i,1); renderTags(); }
     });
 
-    // ---------- Submit ----------
-    form.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      if (!titleEl.value.trim() || !bodyEl.value.trim()) return;
-   const post = {
-    id: crypto.randomUUID(),
-    title: titleEl.value.trim(),
-    body: bodyEl.value.trim(),
-    category: catEl.value,
-    price: catEl.value === 'Sell' ? Number(priceEl.value || 0) : undefined,
-    eventDate: catEl.value === 'Event' ? (dateEl.value || undefined) : undefined,
-    eventTime: catEl.value === 'Event' ? (timeEl.value || undefined) : undefined,
-    location: catEl.value === 'Event' ? (locEl.value || undefined) : undefined,
-    building: catEl.value === 'Event' ? (buildingEl.value || undefined) : undefined,
-    tags: [...tags],
-    likes: 0,
-    createdAt: Date.now(),
+    // Submit - Ahmed Abdelmohsen (Backend added by Chihab)
+	form.addEventListener('submit', (e) => {
 
+	  if (!titleEl.value.trim() || !bodyEl.value.trim()) {
+	    e.preventDefault();
+	    return;
+	  }
 
-    authorEmail: currentUser.email,
-    authorName: currentUser.name
-  };
-
+	 
+	  const tagsField = document.getElementById("tagsField");
+	  if (tagsField) {
+	    tagsField.value = tags.join(","); 
+	  }
+	});
       const done = (imageData)=>{
         if (imageData) post.imageData = imageData;
         const arr = JSON.parse(sessionStorage.getItem('aus_posts')||'[]');

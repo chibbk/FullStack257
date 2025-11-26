@@ -1,3 +1,4 @@
+// Chihab - b00099008
 // Elements
 const editProfileModal = document.getElementById("editProfileModal");
 const editBtn = document.getElementById("editProfileBtn");
@@ -11,7 +12,7 @@ const resetPfpBtn = document.getElementById("resetPfpBtn");
 const defaultPfp = "images/DefaultPfp.jpg";
 const pfpPreview = document.getElementById("pfpPreview");
 const user = JSON.parse(sessionStorage.getItem("aus_user"));
-document.getElementById("profileName").textContent = user?.name || "Your Name";//shortened conditional statement
+document.getElementById("profileName").textContent = user?.name || "Your Name";
 
 //handling reset to default
 let useDefaultPfp = false;
@@ -58,78 +59,91 @@ uploadInput?.addEventListener("change", () => {
 
 
 
+// =============================
+// Load posts from backend
+// =============================
 
-
-
-
-
-
-//Loading Created user posts
-const userData = JSON.parse(sessionStorage.getItem("aus_user"));
 const profilePostsEl = document.getElementById("profilePosts");
 
-function renderProfilePosts(){
-  const posts = JSON.parse(sessionStorage.getItem("aus_profile_posts") || "[]");
+function escapeHtml(s) {
+  return (s || "").replace(/[&<>"']/g, (m) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[m] || m));
+}
 
-  if (posts.length === 0){
-    profilePostsEl.innerHTML = `<p class="text-muted">No posts yet.</p>`;
-    return;
-  }
+async function loadProfilePosts() {
+  if (!profilePostsEl) return;
 
-  let html = "";
-  posts.forEach(p => {
-    html += `
-      <div class="card mb-3 shadow-sm" data-id="${p.id}">
-        ${p.imageData ? `<img src="${p.imageData}" class="card-img-top" style="max-height:220px;object-fit:cover;">` : ""}
-        <div class="card-body">
-          <h5 class="card-title">${p.title}</h5>
-          <p class="card-text">${p.body}</p>
-          <span class="text-muted small d-block mb-2">${p.category}</span>
-          <button class="btn btn-sm btn-outline-danger delete-post-btn" data-id="${p.id}">
-            Delete
-          </button>
+  profilePostsEl.innerHTML = `<p class="text-muted">Loading your posts…</p>`;
+
+  try {
+    const res = await fetch('myPosts');
+    if (!res.ok) {
+      profilePostsEl.innerHTML = `<p class="text-danger">Error loading posts.</p>`;
+      return;
+    }
+
+    const posts = await res.json();
+
+    if (!posts.length) {
+      profilePostsEl.innerHTML = `<p class="text-muted">No posts yet.</p>`;
+      return;
+    }
+
+    let html = "";
+    posts.forEach(p => {
+      html += `
+        <div class="card mb-3 shadow-sm" data-id="${p.id}">
+          <div class="card-body">
+            <h5 class="card-title">${escapeHtml(p.title)}</h5>
+            <p class="card-text">${escapeHtml(p.body)}</p>
+            <span class="text-muted small d-block mb-2">${escapeHtml(p.category)}</span>
+            <button class="btn btn-sm btn-outline-danger delete-post-btn" data-id="${p.id}">
+              Delete
+            </button>
+          </div>
         </div>
-      </div>
-    `;
-  });
+      `;
+    });
 
-  profilePostsEl.innerHTML = html;
+    profilePostsEl.innerHTML = html;
+
+  } catch (err) {
+    console.error(err);
+    profilePostsEl.innerHTML = `<p class="text-danger">Error loading posts.</p>`;
+  }
 }
 
-
-
-
-renderProfilePosts();
-// deletion logic
-function deletePostEverywhere(id) {
-  // Remove from global posts
-  const allPosts = JSON.parse(sessionStorage.getItem("aus_posts") || "[]");
-  const filteredAll = allPosts.filter(p => p.id !== id);
-  sessionStorage.setItem("aus_posts", JSON.stringify(filteredAll));
-
-  // Remove from profile posts
-  const profilePosts = JSON.parse(sessionStorage.getItem("aus_profile_posts") || "[]");
-  const filteredProfile = profilePosts.filter(p => p.id !== id);
-  sessionStorage.setItem("aus_profile_posts", JSON.stringify(filteredProfile));
-}
-
-profilePostsEl.addEventListener("click", (e) => {
+// =============================
+// Delete posts using backend
+// =============================
+profilePostsEl.addEventListener("click", async (e) => {
   const btn = e.target.closest(".delete-post-btn");
   if (!btn) return;
 
   const id = btn.dataset.id;
+  if (!confirm("Delete this post?")) return;
 
+  try {
+    const res = await fetch('deletePost?id=' + encodeURIComponent(id), {
+      method: 'POST'
+    });
 
+    if (res.ok) {
+      loadProfilePosts();
+    }
 
-
-  deletePostEverywhere(id);
-  renderProfilePosts();
+  } catch (err) {
+    console.error(err);
+  }
 });
 
-
-
-
-
+// load posts on page load
+document.addEventListener("DOMContentLoaded", loadProfilePosts);
 
 
 

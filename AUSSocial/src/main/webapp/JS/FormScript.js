@@ -16,27 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // mode: "login" or "signup"
   let mode = "login";
 
-  function getSavedAccount() {
-    return JSON.parse(sessionStorage.getItem("aus_account") || "null");
-  }
-//logout
-   function handleLogout() {
-   
-    sessionStorage.removeItem("aus_user");
-    sessionStorage.removeItem("isLoggedIn");
-
-    // Reset form UI
-    form.reset();
-    setMode(getSavedAccount() ? "login" : "signup");
-
-    // Show the modal again
-    modal.style.display = "flex";
-   }
-  
-  if (!getSavedAccount()) {
-    mode = "signup";
-  }
-
   function setMode(newMode) {
     mode = newMode;
 
@@ -46,129 +25,86 @@ document.addEventListener("DOMContentLoaded", () => {
       authToggleText.textContent = "Don’t have an account?";
       switchAuthModeBtn.textContent = "Sign up";
       authSubmitBtn.textContent = "Log In";
+      nameGroup.style.display = "none";
+      form.action = "login"; 
     } else {
       authTitle.textContent = "Sign Up";
       authSubtitle.textContent = "Create an AUS Social account to get started.";
       authToggleText.textContent = "Already have an account?";
       switchAuthModeBtn.textContent = "Log in";
       authSubmitBtn.textContent = "Sign Up";
+      nameGroup.style.display = "block";
+      form.action = "signup"; 
     }
 
-    // Clear validation errors when switching
     email.setCustomValidity("");
     passwordInput.setCustomValidity("");
   }
 
-  setMode(mode);
+  // initial mode
+  setMode("login");
 
-  // Show modal if not submitted before this tab session
-
-  // https://www.w3schools.com/howto/howto_css_modals.asp
-  if (!sessionStorage.getItem("isLoggedIn")) {
+  // Show modal on first load (you can later improve this with a /whoami check)
+  if (modal) {
     modal.style.display = "flex";
   }
 
-  // Toggle between login <-> signup
+  // Toggle between login / signup
   switchAuthModeBtn.addEventListener("click", () => {
     setMode(mode === "login" ? "signup" : "login");
   });
 
-  email.addEventListener("input", () => email.setCustomValidity(""));
-  passwordInput.addEventListener("input", () => passwordInput.setCustomValidity(""));
-
-// Clear email validation warning
   function validateAusEmail(value) {
     if (!value.endsWith("@aus.edu")) {
       email.setCustomValidity("Please enter a valid AUS email ending with @aus.edu.");
       email.reportValidity();
       return false;
     }
+    email.setCustomValidity("");
     return true;
   }
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
+  email.addEventListener("input", () => email.setCustomValidity(""));
+  passwordInput.addEventListener("input", () => passwordInput.setCustomValidity(""));
 
+  // Let the servlet handle actual auth, just block obviously invalid input
+  form.addEventListener("submit", (event) => {
     const emailVal = (email.value || "").trim();
     const pwdVal = (passwordInput.value || "").trim();
-    const nameVal = (nameInput.value || "AUS User").trim();
 
-    // enforce AUS email
-    if (!validateAusEmail(emailVal)) return;
-
+    if (!validateAusEmail(emailVal)) {
+      event.preventDefault();
+      return;
+    }
     if (pwdVal.length < 4) {
       passwordInput.setCustomValidity("Password should be at least 4 characters.");
       passwordInput.reportValidity();
+      event.preventDefault();
       return;
     }
 
-    let account = getSavedAccount();
-
+    // For signup, require name
     if (mode === "signup") {
-      // prevent signing up twice in this browser
-      if (account && account.email === emailVal) {
-        email.setCustomValidity("An account with this email already exists. Please log in instead.");
-        email.reportValidity();
-        setMode("login");
+      const nameVal = (nameInput.value || "").trim();
+      if (!nameVal) {
+        nameInput.setCustomValidity("Please enter your name.");
+        nameInput.reportValidity();
+        event.preventDefault();
         return;
       }
-
-      account = {
-        name: nameVal,
-        email: emailVal,
-        password: pwdVal
-      };
-      sessionStorage.setItem("aus_account", JSON.stringify(account));
-
-      // mark user as logged in for this tab
-      sessionStorage.setItem(
-        "aus_user",
-        JSON.stringify({ name: account.name, email: account.email })
-      );
-      sessionStorage.setItem("isLoggedIn", "true");
-
-      modal.style.display = "none";
-    } else {
-      // LOGIN MODE
-      if (!account) {
-        email.setCustomValidity("No account found. Please sign up first.");
-        email.reportValidity();
-        setMode("signup");
-        return;
-      }
-
-      if (account.email !== emailVal || account.password !== pwdVal) {
-        passwordInput.setCustomValidity("Incorrect email or password.");
-        passwordInput.reportValidity();
-        return;
-      }
-
-      // success: store session user
-      sessionStorage.setItem(
-        "aus_user",
-        JSON.stringify({ name: account.name, email: account.email })
-      );
-      sessionStorage.setItem("isLoggedIn", "true");
-
-      modal.style.display = "none";
+      nameInput.setCustomValidity("");
     }
+    // If we reach here, the browser submits the form to /login or /signup.
   });
-    // Attach logout behaviour to all navbars
+
+  // Logout links → call /logout servlet
   const logoutButtons = document.querySelectorAll(".logout-link");
   logoutButtons.forEach((btn) => {
     btn.addEventListener("click", (event) => {
       event.preventDefault();
-
-      // If clicked from inside the mobile offcanvas, close it
-      const mobileMenu = document.getElementById("mobileMenu");
-      if (mobileMenu && typeof bootstrap !== "undefined" && bootstrap.Offcanvas) {
-        const offcanvasInstance = bootstrap.Offcanvas.getInstance(mobileMenu);
-        if (offcanvasInstance) offcanvasInstance.hide();
-      }
-
-      handleLogout();
+      window.location.href = "logout"; // servlet mapping
     });
   });
-
 });
+
 

@@ -1,58 +1,65 @@
 // Karim Hamdan- B00100281
 
-function timeAgo(ts) {
-  const diff = Math.floor((Date.now() - ts) / 1000);
-  if (diff < 60) return diff + 's ago';
-  const m = Math.floor(diff / 60);
-  if (m < 60) return m + 'm ago';
-  const h = Math.floor(m / 60);
-  if (h < 24) return h + 'h ago';
-  const d = Math.floor(h / 24);
-  return d + 'd ago';
-}
+const anncListEl = document.getElementById("anncList");
 
 function escapeHtml(s) {
-  return (s || '').replace(/[&<>"']/g, m => ({
-    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
-  }[m]));
+  return (s || "").replace(/[&<>"']/g, (m) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[m] || m));
 }
 
-// load saved posts and shows only the ones meant for Announcement
-const anncList = document.getElementById('anncList');
-const saved = JSON.parse(sessionStorage.getItem('aus_posts') || '[]');
-const onlyAnnouncements = saved
-  .filter(p => p.category === 'Announcement')
-  .sort((a, b) => b.createdAt - a.createdAt);
+function timeAgoFromIso(iso) {
+  if (!iso) return "";
+  const ts = new Date(iso).getTime();
+  const diffSec = Math.floor((Date.now() - ts) / 1000);
+  if (diffSec < 60) return diffSec + "s ago";
+  const m = Math.floor(diffSec / 60);
+  if (m < 60) return m + "m ago";
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + "h ago";
+  const d = Math.floor(h / 24);
+  return d + "d ago";
+}
 
-if (onlyAnnouncements.length > 0) {
-  anncList.innerHTML = '';
-  onlyAnnouncements.forEach(post => {
-    const div = document.createElement('div');
-    div.className = 'card shadow-sm';
-    const tags = (post.tags || [])
-      .map(t => `<span class="badge text-bg-light">#${escapeHtml(t)}</span>`)
-      .join(' ');
-    const img = post.imageData
-      ? `<img src="${post.imageData}" class="img-fluid" alt="announcement image" />`
-      : '';
-    div.innerHTML = `
-      ${img}
-      <div class="card-body">
-        <h5 class="card-title mb-1">${escapeHtml(post.title)}</h5>
-        <p class="card-text mt-2">${escapeHtml(post.body)}</p>
-        <div class="d-flex justify-content-between align-items-center mt-2">
-          <small class="text-muted">${timeAgo(post.createdAt)}</small>
-          <div>${tags}</div>
+async function loadAnnouncements() {
+  if (!anncListEl) return;
+  anncListEl.innerHTML = `<p class="text-muted">Loading…</p>`;
+
+  try {
+    const res = await fetch('announcementsFeed');
+    if (!res.ok) {
+      anncListEl.innerHTML = `<p class="text-danger">Error loading announcements.</p>`;
+      return;
+    }
+    const posts = await res.json();
+    if (!posts.length) {
+      anncListEl.innerHTML = `<p class="text-muted">No announcements yet.</p>`;
+      return;
+    }
+
+    anncListEl.innerHTML = '';
+    posts.forEach(p => {
+      const item = document.createElement('div');
+      item.className = "announcement-item p-3 rounded bg-light shadow-sm mb-3";
+      item.innerHTML = `
+        <h5 class="mb-1">${escapeHtml(p.title)}</h5>
+        <div class="text-muted small mb-2">
+          ${timeAgoFromIso(p.createdAt)} • ${escapeHtml(p.category || "Announcement")}
         </div>
-      </div>
-    `;
-    anncList.appendChild(div);
-  });
-} else {
-  anncList.innerHTML = `
-    <div class="card border-0">
-      <div class="card-body text-center text-muted">
-        No announcements yet.
-      </div>
-    </div>`;
+        <p class="mb-0">${escapeHtml(p.body)}</p>
+      `;
+      anncListEl.appendChild(item);
+    });
+  } catch (err) {
+    console.error(err);
+    anncListEl.innerHTML = `<p class="text-danger">Error loading announcements.</p>`;
+  }
 }
+
+document.addEventListener("DOMContentLoaded", loadAnnouncements);
+
+

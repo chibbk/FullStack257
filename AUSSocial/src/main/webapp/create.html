@@ -67,7 +67,7 @@
 
   <!-- Sign in modal - chihab -->
   <div id="modal" class="modal">
-  <form id="popupForm" class="modalForm">
+<form id="popupForm" class="modalForm" method="post" action="login">
     <h2 id="authTitle">Log In</h2>
     <p id="authSubtitle" class="small" style="margin-bottom: 0.75rem;"></p>
 
@@ -97,6 +97,7 @@
     <h2 class="mt-2 mb-3">Create a post</h2>
     <div class="row g-4">
       <div class="col-lg-7">
+       <!-- Create Form - Ahmed Abdelmohsen & Karim -->
         <form id="createForm" class="card shadow-sm" action="CreatePost" method="post">
           <input type="hidden" id="tagsHidden" name="tags">
 
