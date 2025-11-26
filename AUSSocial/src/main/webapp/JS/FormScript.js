@@ -26,7 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
       switchAuthModeBtn.textContent = "Sign up";
       authSubmitBtn.textContent = "Log In";
       nameGroup.style.display = "none";
-      form.action = "login"; 
+
+      // Disable name in login mode so browser validation doesn’t complain
+      nameInput.required = false;
+      nameInput.disabled = true;
+
+      form.action = "login";
     } else {
       authTitle.textContent = "Sign Up";
       authSubtitle.textContent = "Create an AUS Social account to get started.";
@@ -34,20 +39,45 @@ document.addEventListener("DOMContentLoaded", () => {
       switchAuthModeBtn.textContent = "Log in";
       authSubmitBtn.textContent = "Sign Up";
       nameGroup.style.display = "block";
-      form.action = "signup"; 
+
+      // Enable + require in signup mode
+      nameInput.disabled = false;
+      nameInput.required = true;
+
+      form.action = "signup";
     }
 
     email.setCustomValidity("");
     passwordInput.setCustomValidity("");
   }
 
+
+
   // initial mode
   setMode("login");
 
-  // Show modal on first load (you can later improve this with a /whoami check)
   if (modal) {
-    modal.style.display = "flex";
+    // Optional: hide by default to avoid flash
+    // modal.style.display = "none";
+
+    fetch("whoami")
+      .then((res) => (res.ok ? res.json() : { authenticated: false }))
+      .then((data) => {
+        if (data.authenticated) {
+          // logged in → keep modal hidden
+          modal.style.display = "none";
+        } else {
+          // not logged in → show the login/signup popup
+          modal.style.display = "flex";
+        }
+      })
+      .catch((err) => {
+        console.error("whoami check failed", err);
+        // In case of error, fall back to showing the modal
+        modal.style.display = "flex";
+      });
   }
+
 
   // Toggle between login / signup
   switchAuthModeBtn.addEventListener("click", () => {

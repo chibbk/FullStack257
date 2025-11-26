@@ -55,7 +55,7 @@ public class SignupServlet extends HttpServlet {
             HttpSession session = request.getSession(true);
             session.setAttribute("currentUser", u);
 
-            response.sendRedirect(request.getContextPath() + "/home.html");
+            response.sendRedirect("home.html?justSignedUp=1");
 
         } catch (Exception e) {
             e.printStackTrace();
