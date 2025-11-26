@@ -2,6 +2,7 @@
 
 function timeAgo(ts) {
   const diff = Math.floor((Date.now() - ts) / 1000);
+  if (!Number.isFinite(diff)) return 'just now';
   if (diff < 60) return diff + 's ago';
   const m = Math.floor(diff / 60);
   if (m < 60) return m + 'm ago';
@@ -17,16 +18,21 @@ function escapeHtml(s) {
   }[m]));
 }
 
-// load saved posts and shows only the ones meant for Announcement
 const anncList = document.getElementById('anncList');
-const saved = JSON.parse(sessionStorage.getItem('aus_posts') || '[]');
-const onlyAnnouncements = saved
-  .filter(p => p.category === 'Announcement')
-  .sort((a, b) => b.createdAt - a.createdAt);
 
-if (onlyAnnouncements.length > 0) {
+function renderAnnouncements(posts) {
+  if (posts.length === 0) {
+    anncList.innerHTML = `
+      <div class="card border-0">
+        <div class="card-body text-center text-muted">
+          No announcements yet.
+        </div>
+      </div>`;
+    return;
+  }
+
   anncList.innerHTML = '';
-  onlyAnnouncements.forEach(post => {
+  posts.forEach(post => {
     const div = document.createElement('div');
     div.className = 'card shadow-sm';
     const tags = (post.tags || [])
@@ -48,11 +54,25 @@ if (onlyAnnouncements.length > 0) {
     `;
     anncList.appendChild(div);
   });
-} else {
-  anncList.innerHTML = `
-    <div class="card border-0">
-      <div class="card-body text-center text-muted">
-        No announcements yet.
-      </div>
-    </div>`;
 }
+
+function normalizeAnnouncements(raw) {
+  return (Array.isArray(raw) ? raw : []).map(p => ({
+    ...p,
+    createdAt: p.createdAt ? new Date(p.createdAt).getTime() : Date.now(),
+    tags: p.tags ? String(p.tags).split(',').map(t => t.trim()).filter(Boolean) : []
+  }));
+}
+
+async function loadAnnouncements() {
+  try {
+    const res = await fetch('/announcementsFeed', { credentials: 'include' });
+    const data = await res.json();
+    renderAnnouncements(normalizeAnnouncements(data));
+  } catch (err) {
+    console.error('Failed to load announcements', err);
+    renderAnnouncements([]);
+  }
+}
+
+loadAnnouncements();
