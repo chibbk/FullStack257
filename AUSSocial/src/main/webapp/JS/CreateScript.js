@@ -77,40 +77,20 @@
       if (e.target.tagName==='BUTTON') { const i=+e.target.dataset.i; tags.splice(i,1); renderTags(); }
     });
 
-    // Submit - Ahmed Abdelmohsen (Backend added by Chihab)
-	form.addEventListener('submit', (e) => {
+	// Submit - Ahmed Abdelmohsen (Backend added by Chihab)
+	if (form) {
+	  form.addEventListener('submit', (e) => {
+	    // Simple required check for title and body
+	    if (!titleEl.value.trim() || !bodyEl.value.trim()) {
+	      e.preventDefault();
+	      return;
+	    }
 
-	  if (!titleEl.value.trim() || !bodyEl.value.trim()) {
-	    e.preventDefault();
-	    return;
-	  }
-
-	 
-	  const tagsField = document.getElementById("tagsHidden");
-	  if (tagsField) {
-	    tagsField.value = tags.join(","); 
-	  }
-	});
-      const done = (imageData)=>{
-        if (imageData) post.imageData = imageData;
-        const arr = JSON.parse(sessionStorage.getItem('aus_posts')||'[]');
-        arr.unshift(post);
-        sessionStorage.setItem('aus_posts', JSON.stringify(arr));
-
-        // save to profile ONLY for: Question, Sell, Other - Chihab 
-    if(["Question","Sell","Other"].includes(post.category)){
-      const profArr = JSON.parse(sessionStorage.getItem('aus_profile_posts')||'[]');
-      profArr.unshift(post);
-      sessionStorage.setItem('aus_profile_posts', JSON.stringify(profArr));
-    }
-  // redirect-Karim 
-  window.location.href = (post.category === 'Announcement')
-    ? 'announcements.html'
-    : 'home.html';
-
-      };
-
-      const f = imgEl.files?.[0];
-      if (f) { const r = new FileReader(); r.onload = e=> done(e.target.result); r.readAsDataURL(f); }
-      else { done(); }
-    });
+	    // Put tags into hidden field so the servlet can read request.getParameter("tags")
+	    const tagsField = document.getElementById("tagsHidden");
+	    if (tagsField) {
+	      tagsField.value = tags.join(",");
+	    }
+	    // Let the browser submit normally to the servlet
+	  });
+	}

@@ -31,11 +31,13 @@ public class WhoAmIServlet extends HttpServlet {
             if (user == null) {
                 out.write("{\"authenticated\":false}");
             } else {
-                out.write("{"
-                        + "\"authenticated\":true,"
-                        + "\"name\":" + json(user.getUsername()) + ","
-                        + "\"email\":" + json(user.getEmail())
-                        + "}");
+            	out.write("{"
+            	        + "\"authenticated\":true,"
+            	        + "\"id\":" + user.getId() + ","  // <--- add this
+            	        + "\"name\":" + json(user.getUsername()) + ","
+            	        + "\"email\":" + json(user.getEmail())
+            	        + "}");
+
             }
         }
     }
