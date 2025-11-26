@@ -86,7 +86,7 @@
 	  }
 
 	 
-	  const tagsField = document.getElementById("tagsField");
+	  const tagsField = document.getElementById("tagsHidden");
 	  if (tagsField) {
 	    tagsField.value = tags.join(","); 
 	  }
