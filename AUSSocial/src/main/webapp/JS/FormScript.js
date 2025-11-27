@@ -64,16 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((res) => (res.ok ? res.json() : { authenticated: false }))
       .then((data) => {
         if (data.authenticated) {
-          // logged in → keep modal hidden
           modal.style.display = "none";
         } else {
-          // not logged in → show the login/signup popup
           modal.style.display = "flex";
         }
       })
       .catch((err) => {
         console.error("whoami check failed", err);
-        // In case of error, fall back to showing the modal
         modal.style.display = "flex";
       });
   }
