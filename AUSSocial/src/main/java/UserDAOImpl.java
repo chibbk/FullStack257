@@ -9,8 +9,8 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean createUser(User user) throws Exception {
-        String sql = "INSERT INTO users (username, email, password_hash, bio, profile_picture) " +
-                     "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (username, email, password_hash, bio) " +
+                     "VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -19,7 +19,7 @@ public class UserDAOImpl implements UserDAO {
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getPasswordHash());
             ps.setString(4, user.getBio());
-            ps.setString(5, user.getProfilePicture());
+
 
             int rows = ps.executeUpdate();
             if (rows == 0) return false;
@@ -36,7 +36,7 @@ public class UserDAOImpl implements UserDAO {
     
     @Override
     public List<User> searchByUsername(String query) throws Exception {
-        String sql = "SELECT id, username, email, bio, profile_picture " +
+        String sql = "SELECT id, username, email, bio " +
                      "FROM users " +
                      "WHERE username LIKE ? " +
                      "ORDER BY username " +
@@ -56,7 +56,6 @@ public class UserDAOImpl implements UserDAO {
                     u.setUsername(rs.getString("username"));
                     u.setEmail(rs.getString("email"));
                     u.setBio(rs.getString("bio"));
-                    u.setProfilePicture(rs.getString("profile_picture"));
                     users.add(u);
                 }
             }
@@ -69,7 +68,7 @@ public class UserDAOImpl implements UserDAO {
     
     @Override
     public User findByEmail(String email) throws Exception {
-        String sql = "SELECT id, username, email, password_hash, bio, profile_picture " +
+        String sql = "SELECT id, username, email, password_hash, bio " +
                      "FROM users WHERE email = ?";
 
         try (Connection conn = DBConnection.getConnection();
@@ -86,7 +85,6 @@ public class UserDAOImpl implements UserDAO {
                 u.setEmail(rs.getString("email"));
                 u.setPasswordHash(rs.getString("password_hash"));
                 u.setBio(rs.getString("bio"));
-                u.setProfilePicture(rs.getString("profile_picture"));
                 return u;
             }
         }
@@ -115,18 +113,7 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
-    @Override
-    public boolean updateProfilePicture(int userId, String profilePath) throws Exception {
-        String sql = "UPDATE users SET profile_picture = ? WHERE id = ?";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, profilePath);
-            ps.setInt(2, userId);
-            return ps.executeUpdate() > 0;
-        }
-    }
+   
 
     // Simple SHA-256 hashing for passwords
     public static String hashPassword(String plain) {

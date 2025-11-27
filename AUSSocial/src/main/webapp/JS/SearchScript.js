@@ -4,6 +4,9 @@ const searchModal   = document.getElementById("searchModal");
 const searchInput   = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
 
+// Default profile picture (works in your browser)
+const DEFAULT_PFP = "images/DefaultPfp.jpg";
+
 let currentSearchAbort = null;
 
 // --------- Open / Close Search Modal ---------
@@ -54,22 +57,23 @@ searchInput.addEventListener("input", () => {
       }
 
       users.forEach(u => {
-        const username = u.username || "";
         const id = u.id;
-        const profilePicture = u.profilePicture || "images/default_pfp.png";  // <-- fallback
+        const username = u.username || "";
+        const profilePicture = DEFAULT_PFP; // always use default
 
-        searchResults.innerHTML += `
+        const html = `
           <div class="border rounded p-2 mb-2 d-flex align-items-center search-user-result"
                data-id="${id}"
                data-username="${username}"
                data-profile-picture="${profilePicture}"
                style="cursor:pointer; gap: 10px;">
             <img src="${profilePicture}"
-                 alt="@${username}"
                  class="rounded-circle me-2"
                  style="width:32px;height:32px;object-fit:cover;">
             <strong>@${username}</strong>
           </div>`;
+
+        searchResults.insertAdjacentHTML("beforeend", html);
       });
     })
     .catch(err => {
@@ -85,8 +89,8 @@ searchResults.addEventListener("click", (e) => {
   const box = e.target.closest(".search-user-result");
   if (!box) return;
 
-  const username = box.dataset.username;
-  const profilePicture = box.dataset.profilePicture || "images/default_pfp.png";
+  const username = box.dataset.username || "";
+  const profilePicture = box.dataset.profilePicture || DEFAULT_PFP;
 
   showProfilePreview(username, profilePicture);
 });
@@ -103,7 +107,6 @@ function showProfilePreview(username, profilePicture) {
     <div class="profile-preview-inner">
       <button type="button" class="profile-preview-close">&times;</button>
       <img src="${profilePicture}"
-           alt="@${username}"
            class="profile-preview-image">
       <p class="profile-preview-username">@${username}</p>
     </div>

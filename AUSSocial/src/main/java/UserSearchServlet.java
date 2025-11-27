@@ -38,10 +38,10 @@ public class UserSearchServlet extends HttpServlet {
 
             for (int i = 0; i < users.size(); i++) {
                 User u = users.get(i);
+
                 sb.append("{")
                   .append("\"id\":").append(u.getId()).append(",")
-                  .append("\"username\":").append(json(u.getUsername())).append(",")
-                  .append("\"profilePicture\":").append(json(u.getProfilePicture()))
+                  .append("\"username\":").append(json(u.getUsername()))
                   .append("}");
 
                 if (i < users.size() - 1) {

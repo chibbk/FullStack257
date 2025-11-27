@@ -36,8 +36,7 @@ public class WhoAmIServlet extends HttpServlet {
             	        + "\"id\":" + user.getId() + ","
                         + "\"username\":" + json(user.getUsername()) + ","
                         + "\"email\":" + json(user.getEmail()) + ","
-                        + "\"bio\":" + json(user.getBio()) + ","
-                        + "\"profilePicture\":" + json(user.getProfilePicture())
+                        + "\"bio\":" + json(user.getBio())
                         + "}");
 
             }

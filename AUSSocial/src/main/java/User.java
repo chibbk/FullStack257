@@ -51,12 +51,7 @@ public class User {
         this.bio = bio;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
+ 
 
     @Override
     public String toString() {
