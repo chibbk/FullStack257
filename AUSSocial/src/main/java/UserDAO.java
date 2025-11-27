@@ -1,3 +1,6 @@
+// UserDAO.java
+import java.util.List;
+
 public interface UserDAO {
 
     boolean createUser(User user) throws Exception;
@@ -12,4 +15,7 @@ public interface UserDAO {
     boolean updateBio(int userId, String bio) throws Exception;
 
     boolean updateProfilePicture(int userId, String profilePath) throws Exception;
+
+    // NEW:
+    List<User> searchByUsername(String query) throws Exception;
 }

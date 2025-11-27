@@ -1,6 +1,9 @@
 import java.sql.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.ArrayList;
+
 
 public class UserDAOImpl implements UserDAO {
 
@@ -29,7 +32,41 @@ public class UserDAOImpl implements UserDAO {
             return true;
         }
     }
+    
+    
+    @Override
+    public List<User> searchByUsername(String query) throws Exception {
+        String sql = "SELECT id, username, email, bio, profile_picture " +
+                     "FROM users " +
+                     "WHERE username LIKE ? " +
+                     "ORDER BY username " +
+                     "LIMIT 10";
 
+        List<User> users = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, "%" + query + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User u = new User();
+                    u.setId(rs.getInt("id"));
+                    u.setUsername(rs.getString("username"));
+                    u.setEmail(rs.getString("email"));
+                    u.setBio(rs.getString("bio"));
+                    u.setProfilePicture(rs.getString("profile_picture"));
+                    users.add(u);
+                }
+            }
+        }
+
+        return users;
+    }
+
+    
+    
     @Override
     public User findByEmail(String email) throws Exception {
         String sql = "SELECT id, username, email, password_hash, bio, profile_picture " +
