@@ -41,7 +41,7 @@ public class DeletePostServlet extends HttpServlet {
             }
 
             // after delete, go back to feed
-            response.sendRedirect(request.getContextPath() + "/home.html");
+            response.sendRedirect(request.getContextPath() + "/index.html");
 
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid post id.");

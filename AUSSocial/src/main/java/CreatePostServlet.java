@@ -22,7 +22,7 @@ public class CreatePostServlet extends HttpServlet {
         User currentUser = (session != null) ? (User) session.getAttribute("currentUser") : null;
         if (currentUser == null) {
             // not logged in
-            response.sendRedirect(request.getContextPath() + "/home.html");
+            response.sendRedirect(request.getContextPath() + "/index.html");
             return;
         }
 
@@ -75,7 +75,7 @@ public class CreatePostServlet extends HttpServlet {
             }
 
             // redirect depending on category (like your CreateScript.js)
-            String redirectPage = "home.html";
+            String redirectPage = "index.html";
             if ("Announcement".equalsIgnoreCase(category)) {
                 redirectPage = "announcements.html";
             }
