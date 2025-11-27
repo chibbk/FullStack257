@@ -9,6 +9,7 @@ public class DBConnection {
       + "?useUnicode=true&characterEncoding=utf8"
       + "&connectionCollation=utf8mb4_unicode_ci"
       + "&serverTimezone=UTC";
+    //The extended URL adds unicode support and assists in timezone implementation =)
 
     private static final String USER = "root";
     private static final String PASSWORD = "Cjmk2025";
