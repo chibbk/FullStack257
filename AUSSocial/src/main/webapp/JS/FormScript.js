@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mode === "login") {
       authTitle.textContent = "Log In";
       authSubtitle.textContent = "Welcome back! Log in with your AUS email and password.";
-      authToggleText.textContent = "Don’t have an account?";
+      authToggleText.textContent = "Don't have an account?";
       switchAuthModeBtn.textContent = "Sign up";
       authSubmitBtn.textContent = "Log In";
       nameGroup.style.display = "none";

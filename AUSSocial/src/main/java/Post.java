@@ -17,7 +17,7 @@ public class Post {
     private String building;
 
     private String tags;       // comma-separated string
-    private String imagePath;
+
 
     private Timestamp createdAt;
     private int likeCount;
@@ -109,13 +109,6 @@ public class Post {
     }
     public void setTags(String tags) {
         this.tags = tags;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
     }
 
     public Timestamp getCreatedAt() {

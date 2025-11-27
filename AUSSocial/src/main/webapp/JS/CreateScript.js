@@ -15,7 +15,6 @@
     const dateEl = $$('#date');
     const timeEl = $$('#time');
     const locEl = $$('#location');
-    const imgEl = $$('#image');
     const buildingEl = $$('#building');
 
     const tagInput = $$('#tagInput');
@@ -25,7 +24,6 @@
 
     // Preview refs
     const pTitle=$$('#pTitle'), pBody=$$('#pBody'), pMeta=$$('#pMeta'), pTags=$$('#pTags');
-    const pImg=$$('#previewImg'), pImgWrap=$$('#previewImgWrap');
 
     // ---------- Category toggles ----------
     function toggleCategoryUI(){
@@ -49,13 +47,7 @@
     titleEl.addEventListener('input', ()=> pTitle.textContent = titleEl.value || 'Your title');
     bodyEl.addEventListener('input', ()=> pBody.textContent = bodyEl.value || 'Start typing to see a preview…');
 
-    imgEl.addEventListener('change', ()=>{
-      const f = imgEl.files?.[0];
-      if (!f) { pImgWrap.classList.add('d-none'); pImg.removeAttribute('src'); return; }
-      const r = new FileReader();
-      r.onload = e => { pImg.src = e.target.result; pImgWrap.classList.remove('d-none'); };
-      r.readAsDataURL(f);
-    });
+
 
     // ---------- Tags ----------
     function renderTags(){

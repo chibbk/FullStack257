@@ -132,9 +132,7 @@
 	    .map(t => `<span class="badge text-bg-light">#${escapeHtml(t.trim())}</span>`)
 	    .join(' ');
 
-	  const imgMarkup = p.imagePath
-	    ? `<img class="img-fluid" src="${escapeHtml(p.imagePath)}" alt="post image" />`
-	    : '';
+
 
 	  const timeLabel = p.createdAt ? timeAgoFromIso(p.createdAt) : '';
 
@@ -156,7 +154,6 @@
 	  const likeCount = typeof p.likeCount === "number" ? p.likeCount : 0;
 
 	  card.innerHTML = `
-	    ${imgMarkup}
 	    <div class="card-body">
 	      <div class="d-flex justify-content-between align-items-start gap-3">
 	        <div>

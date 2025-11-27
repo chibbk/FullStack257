@@ -10,8 +10,8 @@ public class PostDAOImpl implements PostDAO {
     public boolean createPost(Post post) throws Exception {
         String sql = "INSERT INTO posts (" +
                 "user_id, title, body, category, price, event_date, event_time, " +
-                "location, building, tags, image_path" +
-                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "location, building, tags" +
+                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -42,7 +42,6 @@ public class PostDAOImpl implements PostDAO {
             ps.setString(8, post.getLocation());
             ps.setString(9, post.getBuilding());
             ps.setString(10, post.getTags());
-            ps.setString(11, post.getImagePath());
 
             int rows = ps.executeUpdate();
             if (rows == 0) return false;
@@ -149,7 +148,6 @@ public class PostDAOImpl implements PostDAO {
         p.setLocation(rs.getString("location"));
         p.setBuilding(rs.getString("building"));
         p.setTags(rs.getString("tags"));
-        p.setImagePath(rs.getString("image_path"));
         p.setCreatedAt(rs.getTimestamp("created_at"));
         p.setLikeCount(rs.getInt("like_count"));
 

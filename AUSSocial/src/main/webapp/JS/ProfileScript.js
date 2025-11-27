@@ -9,32 +9,75 @@ const bioTxt = document.getElementById("bioText");
 const editBioInput = document.getElementById("editBio");
 const uploadInput = document.getElementById("uploadPfp");
 const resetPfpBtn = document.getElementById("resetPfpBtn");
-const defaultPfp = "images/DefaultPfp.jpg";
 const pfpPreview = document.getElementById("pfpPreview");
-const user = JSON.parse(sessionStorage.getItem("aus_user"));
-document.getElementById("profileName").textContent = user?.name || "Your Name";
+const profileNameEl = document.getElementById("profileName");
 
-//handling reset to default
+const defaultPfp = "images/DefaultPfp.jpg";
+
+// handling reset to default
 let useDefaultPfp = false;
 
-//restoring saved data
-const savedPfp = sessionStorage.getItem("pfpImage");
-if (savedPfp) pfpImg.src = savedPfp;
+// =============================
+// Load profile from backend
+// =============================
+async function loadProfileFromServer() {
+  try {
+    const res = await fetch("whoami", {
+      method: "GET",
+      credentials: "include"
+    });
 
-const savedBio = sessionStorage.getItem("profileBio");
-bioTxt.textContent = savedBio ? savedBio : "No bio added yet.";
+    const data = await res.json();
+    console.log("whoami data:", data);
 
-// Open modal
+    // use authenticated, not loggedIn
+    if (!data.authenticated) {
+      profileNameEl.textContent = "Guest";
+      bioTxt.textContent = "No bio added yet.";
+      pfpImg.src = defaultPfp;
+      pfpPreview.src = defaultPfp;
+      return;
+    }
+
+    profileNameEl.textContent = data.username || "Your Name";
+
+    if (typeof data.bio === "string" && data.bio.trim() !== "") {
+      bioTxt.textContent = data.bio;
+    } else {
+      bioTxt.textContent = "No bio added yet.";
+    }
+
+    if (typeof data.profilePicture === "string" && data.profilePicture.trim() !== "") {
+      pfpImg.src = data.profilePicture;
+      pfpPreview.src = data.profilePicture;
+    } else {
+      pfpImg.src = defaultPfp;
+      pfpPreview.src = defaultPfp;
+    }
+
+  } catch (err) {
+    console.error("Error loading profile:", err);
+    profileNameEl.textContent = "Your Name";
+    bioTxt.textContent = "No bio added yet.";
+    pfpImg.src = defaultPfp;
+    pfpPreview.src = defaultPfp;
+  }
+}
+
+
+// =============================
+// Open/close modal
+// =============================
 editBtn?.addEventListener("click", () => {
   editProfileModal.style.display = "flex";
-  editBioInput.value = (bioTxt.textContent === "No bio added yet.") ? "" : bioTxt.textContent;
+  editBioInput.value =
+    bioTxt.textContent === "No bio added yet." ? "" : bioTxt.textContent;
   editBioInput.focus();
   useDefaultPfp = false;
 
-  //sync preview with REAL pfp when modal opens
+  // sync preview with REAL pfp when modal opens
   pfpPreview.src = pfpImg.src;
 });
-
 
 function closeEditModal() {
   editProfileModal.style.display = "none";
@@ -46,33 +89,40 @@ window.addEventListener("click", (e) => {
   if (e.target === editProfileModal) closeEditModal();
 });
 
+// =============================
+// PFP upload + preview (no storage)
+// =============================
 uploadInput?.addEventListener("change", () => {
   const file = uploadInput.files?.[0];
   if (file) {
     useDefaultPfp = false;
     const reader = new FileReader();
-    reader.onload = () => pfpPreview.src = reader.result;
+    reader.onload = () => (pfpPreview.src = reader.result);
     reader.readAsDataURL(file);
   }
 });
 
-
-
+resetPfpBtn?.addEventListener("click", () => {
+  useDefaultPfp = true;
+  if (uploadInput) uploadInput.value = "";
+  pfpPreview.src = defaultPfp; // changes applied on Save
+});
 
 // =============================
 // Load posts from backend
 // =============================
-
 const profilePostsEl = document.getElementById("profilePosts");
 
 function escapeHtml(s) {
-  return (s || "").replace(/[&<>"']/g, (m) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  }[m] || m));
+  return (s || "").replace(/[&<>"']/g, (m) => (
+    {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[m] || m
+  ));
 }
 
 async function loadProfilePosts() {
@@ -81,7 +131,7 @@ async function loadProfilePosts() {
   profilePostsEl.innerHTML = `<p class="text-muted">Loading your posts…</p>`;
 
   try {
-    const res = await fetch('myPosts');
+    const res = await fetch("myPosts", { credentials: "include" });
     if (!res.ok) {
       profilePostsEl.innerHTML = `<p class="text-danger">Error loading posts.</p>`;
       return;
@@ -95,7 +145,7 @@ async function loadProfilePosts() {
     }
 
     let html = "";
-    posts.forEach(p => {
+    posts.forEach((p) => {
       html += `
         <div class="card mb-3 shadow-sm" data-id="${p.id}">
           <div class="card-body">
@@ -121,7 +171,7 @@ async function loadProfilePosts() {
 // =============================
 // Delete posts using backend
 // =============================
-profilePostsEl.addEventListener("click", async (e) => {
+profilePostsEl?.addEventListener("click", async (e) => {
   const btn = e.target.closest(".delete-post-btn");
   if (!btn) return;
 
@@ -129,8 +179,9 @@ profilePostsEl.addEventListener("click", async (e) => {
   if (!confirm("Delete this post?")) return;
 
   try {
-    const res = await fetch('deletePost?id=' + encodeURIComponent(id), {
-      method: 'POST'
+    const res = await fetch("deletePost?id=" + encodeURIComponent(id), {
+      method: "POST",
+      credentials: "include"
     });
 
     if (res.ok) {
@@ -142,50 +193,71 @@ profilePostsEl.addEventListener("click", async (e) => {
   }
 });
 
-// load posts on page load
-document.addEventListener("DOMContentLoaded", loadProfilePosts);
+// =============================
+// Save bio to backend (DB)
+// =============================
+async function saveBioToServer(newBio) {
+  try {
+    const res = await fetch("updateBio", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+      },
+      credentials: "include",
+      body: "bio=" + encodeURIComponent(newBio)
+    });
 
+    if (!res.ok) {
+      throw new Error("Failed to save bio, status " + res.status);
+    }
 
+    const data = await res.json().catch(() => null);
+    console.log("updateBio response:", data); // debug
 
+    if (data && data.ok === false) {
+      throw new Error(data.error || "Server returned ok=false");
+    }
+  } catch (err) {
+    console.error("Error saving bio:", err);
+    alert("Couldn't save your bio. Please try again.");
+  }
+}
 
-
-
-
-
-resetPfpBtn?.addEventListener("click", () => {
-  useDefaultPfp = true;
-  uploadInput.value = "";
-  pfpPreview.src = defaultPfp; //Trying to make it so that changes won't be final until the user saves their progress
-});
-
-
-
-// Save handler
-editForm?.addEventListener("submit", (e) => {
+// =============================
+// Save handler (bio + in-page PFP)
+// =============================
+editForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  
-if (useDefaultPfp) {
+  // PFP apply (still only front-end)
+  if (useDefaultPfp) {
     pfpImg.src = defaultPfp;
-    sessionStorage.setItem("pfpImage", defaultPfp);
-} else if (uploadInput.files?.[0]) {
-    // if user chose a new file
+  } else if (uploadInput.files?.[0]) {
+    const file = uploadInput.files[0];
     const reader = new FileReader();
     reader.onload = () => {
       pfpImg.src = reader.result;
-      sessionStorage.setItem("pfpImage", reader.result);
     };
-    reader.readAsDataURL(uploadInput.files[0]);
-} else {
+    reader.readAsDataURL(file);
+  } else {
     // no change → keep the preview src
-    if (pfpPreview.src !== pfpImg.src) sessionStorage.setItem("pfpImage", pfpPreview.src);
     pfpImg.src = pfpPreview.src;
-}
+  }
 
+  // Bio: update UI and send to DB
   const newBio = editBioInput.value.trim();
   const finalBio = newBio === "" ? "No bio added yet." : newBio;
   bioTxt.textContent = finalBio;
-  sessionStorage.setItem("profileBio", finalBio);
+
+  await saveBioToServer(newBio);
 
   closeEditModal();
+});
+
+// =============================
+// On page load
+// =============================
+document.addEventListener("DOMContentLoaded", () => {
+  loadProfileFromServer();
+  loadProfilePosts();
 });

@@ -107,13 +107,11 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public boolean updateBio(int userId, String bio) throws Exception {
         String sql = "UPDATE users SET bio = ? WHERE id = ?";
-
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setString(1, bio);
             ps.setInt(2, userId);
-            return ps.executeUpdate() > 0;
+            return ps.executeUpdate() == 1;
         }
     }
 

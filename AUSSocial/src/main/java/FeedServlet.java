@@ -39,7 +39,18 @@ public class FeedServlet extends HttpServlet {
                 if (p.getPrice() != null) {
                     sb.append("\"price\":").append(p.getPrice()).append(",");
                 }
-
+                
+                if (p.getEventDate() != null) {
+                    sb.append("\"eventDate\":")
+                      .append(json(p.getEventDate().toString()))
+                      .append(",");
+                }
+                if (p.getEventTime() != null) {
+                    sb.append("\"eventTime\":")
+                      .append(json(p.getEventTime().toString()))
+                      .append(",");
+                }
+                
                 sb.append("\"location\":").append(json(p.getLocation())).append(",")
                   .append("\"building\":").append(json(p.getBuilding())).append(",")
                   .append("\"tags\":").append(json(p.getTags())).append(",")

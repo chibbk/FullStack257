@@ -33,10 +33,12 @@ public class WhoAmIServlet extends HttpServlet {
             } else {
             	out.write("{"
             	        + "\"authenticated\":true,"
-            	        + "\"id\":" + user.getId() + ","  // <--- add this
-            	        + "\"name\":" + json(user.getUsername()) + ","
-            	        + "\"email\":" + json(user.getEmail())
-            	        + "}");
+            	        + "\"id\":" + user.getId() + ","
+                        + "\"username\":" + json(user.getUsername()) + ","
+                        + "\"email\":" + json(user.getEmail()) + ","
+                        + "\"bio\":" + json(user.getBio()) + ","
+                        + "\"profilePicture\":" + json(user.getProfilePicture())
+                        + "}");
 
             }
         }

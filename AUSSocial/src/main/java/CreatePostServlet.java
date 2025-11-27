@@ -63,7 +63,6 @@ public class CreatePostServlet extends HttpServlet {
             post.setLocation(location);
             post.setBuilding(building);
             post.setTags(tags);
-            // post.setImagePath(...)  // you can add file upload later
 
             PostDAO postDAO = new PostDAOImpl();
             boolean created = postDAO.createPost(post);
