@@ -66,7 +66,7 @@ searchInput.addEventListener("input", () => {
                data-id="${id}"
                data-username="${username}"
                data-profile-picture="${profilePicture}"
-               style="cursor:pointer; gap: 10px;">
+               style="cursor:default; gap: 10px;">
             <img src="${profilePicture}"
                  class="rounded-circle me-2"
                  style="width:32px;height:32px;object-fit:cover;">
@@ -84,16 +84,6 @@ searchInput.addEventListener("input", () => {
     });
 });
 
-// --------- Click on Result -> Show Centered Profile Picture ---------
-searchResults.addEventListener("click", (e) => {
-  const box = e.target.closest(".search-user-result");
-  if (!box) return;
-
-  const username = box.dataset.username || "";
-  const profilePicture = box.dataset.profilePicture || DEFAULT_PFP;
-
-  showProfilePreview(username, profilePicture);
-});
 
 // --------- Overlay helper ---------
 function showProfilePreview(username, profilePicture) {

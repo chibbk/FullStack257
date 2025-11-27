@@ -360,6 +360,11 @@ body {
 } 
 }
 
+.search-user-result {
+  pointer-events: none;
+}
+
+
 .openSearch {
   cursor: pointer;
 }
