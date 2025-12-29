@@ -201,8 +201,7 @@ async function saveBioToServer(newBio) {
       throw new Error(data.error || "Server returned ok=false");
     }
   } catch (err) {
-    console.error("Error saving bio:", err);
-    alert("Couldn't save your bio. Please try again.");
+
   }
 }
 
