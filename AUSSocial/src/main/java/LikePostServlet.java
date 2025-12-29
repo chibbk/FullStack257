@@ -55,8 +55,8 @@ public class LikePostServlet extends HttpServlet {
         try (Connection conn = DBConnection.getConnection()) {
             conn.setAutoCommit(false);
 
-            // Check if like exists
-            String checkSql = "SELECT 1 FROM post_likes WHERE user_id=? AND post_id=?";
+            String checkSql = "SELECT 1 FROM post_likes WHERE user_id=? AND post_id=?"; //checking if like exists
+
             boolean alreadyLiked = false;
             try (PreparedStatement ps = conn.prepareStatement(checkSql)) {
                 ps.setInt(1, currentUser.getId());
@@ -69,7 +69,7 @@ public class LikePostServlet extends HttpServlet {
             int likeChange = 0;
 
             if (alreadyLiked) {
-                // Unlike
+                //unlike
                 String delSql = "DELETE FROM post_likes WHERE user_id=? AND post_id=?";
                 try (PreparedStatement ps = conn.prepareStatement(delSql)) {
                     ps.setInt(1, currentUser.getId());
@@ -78,7 +78,7 @@ public class LikePostServlet extends HttpServlet {
                 }
                 likeChange = -1;
             } else {
-                // Like
+                //Like
                 String insSql = "INSERT INTO post_likes (user_id, post_id) VALUES (?, ?)";
                 try (PreparedStatement ps = conn.prepareStatement(insSql)) {
                     ps.setInt(1, currentUser.getId());
@@ -88,7 +88,7 @@ public class LikePostServlet extends HttpServlet {
                 likeChange = 1;
             }
 
-            // Update like_count in posts
+            //Update like_count in posts
             String updSql = "UPDATE posts SET like_count = like_count + ? WHERE id = ?";
             try (PreparedStatement ps = conn.prepareStatement(updSql)) {
                 ps.setInt(1, likeChange);
@@ -96,7 +96,7 @@ public class LikePostServlet extends HttpServlet {
                 ps.executeUpdate();
             }
 
-            // Get new like_count
+            //get new like_count
             int newCount = 0;
             String countSql = "SELECT like_count FROM posts WHERE id = ?";
             try (PreparedStatement ps = conn.prepareStatement(countSql)) {

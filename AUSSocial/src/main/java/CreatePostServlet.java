@@ -45,7 +45,7 @@ public class CreatePostServlet extends HttpServlet {
         try {
             Post post = new Post(currentUser.getId(), title, body, category);
 
-            // optional fields
+
             if (priceStr != null && !priceStr.isBlank()) {
                 try {
                     post.setPrice(Double.parseDouble(priceStr));
@@ -53,11 +53,11 @@ public class CreatePostServlet extends HttpServlet {
             }
 
             if (eventDateStr != null && !eventDateStr.isBlank()) {
-                post.setEventDate(LocalDate.parse(eventDateStr)); // expects yyyy-MM-dd
+                post.setEventDate(LocalDate.parse(eventDateStr)); //expects yyyy-MM-dd
             }
 
             if (eventTimeStr != null && !eventTimeStr.isBlank()) {
-                post.setEventTime(LocalTime.parse(eventTimeStr)); // expects HH:mm
+                post.setEventTime(LocalTime.parse(eventTimeStr)); //expects HH:mm
             }
 
             post.setLocation(location);
@@ -73,7 +73,6 @@ public class CreatePostServlet extends HttpServlet {
                 return;
             }
 
-            // redirect depending on category (like your CreateScript.js)
             String redirectPage = "index.html";
             if ("Announcement".equalsIgnoreCase(category)) {
                 redirectPage = "announcements.html";

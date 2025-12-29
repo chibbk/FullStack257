@@ -43,7 +43,6 @@ public class WhoAmIServlet extends HttpServlet {
         }
     }
 
-    // You can reuse this helper from AnnouncementsServlet
     private String json(String s) {
         if (s == null) return "null";
         return "\"" + s

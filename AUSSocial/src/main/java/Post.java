@@ -8,15 +8,15 @@ public class Post {
 
     private String title;
     private String body;
-    private String category; // Question, Sell, Event, Announcement, Other
+    private String category; //Question, Sell, Event, Announcement, Other
 
-    private Double price;      // only for Sell
-    private LocalDate eventDate; // only for Event
+    private Double price;      //only for Sell
+    private LocalDate eventDate; //only for Event
     private LocalTime eventTime;
     private String location;
     private String building;
 
-    private String tags;       // comma-separated string
+    private String tags; 
 
 
     private Timestamp createdAt;

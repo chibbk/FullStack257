@@ -21,7 +21,7 @@ public class DeletePostServlet extends HttpServlet {
             return;
         }
 
-        String idStr = request.getParameter("id");  // expecting ?id=123
+        String idStr = request.getParameter("id");  
         if (idStr == null || idStr.isBlank()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing post id.");
             return;
@@ -34,13 +34,12 @@ public class DeletePostServlet extends HttpServlet {
             boolean deleted = postDAO.deletePost(postId, currentUser.getId());
 
             if (!deleted) {
-                // either post doesn't exist or doesn't belong to user
+   
                 response.sendError(HttpServletResponse.SC_FORBIDDEN,
                         "You are not allowed to delete this post.");
                 return;
             }
 
-            // after delete, go back to feed
             response.sendRedirect(request.getContextPath() + "/index.html");
 
         } catch (NumberFormatException e) {

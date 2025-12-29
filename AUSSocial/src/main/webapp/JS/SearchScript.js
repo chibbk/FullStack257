@@ -1,15 +1,12 @@
-// --------- Elements ---------
 const searchButtons = document.querySelectorAll(".openSearch");
 const searchModal   = document.getElementById("searchModal");
 const searchInput   = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
 
-// Default profile picture (works in your browser)
 const DEFAULT_PFP = "images/DefaultPfp.jpg";
 
 let currentSearchAbort = null;
 
-// --------- Open / Close Search Modal ---------
 searchButtons.forEach(btn => {
   btn.addEventListener("click", (e) => {
     e.preventDefault();
@@ -27,14 +24,12 @@ window.addEventListener("click", (e) => {
   }
 });
 
-// --------- Searching ---------
 searchInput.addEventListener("input", () => {
   const q = searchInput.value.trim();
   searchResults.innerHTML = "";
 
   if (!q) return;
 
-  // cancel previous request if any
   if (currentSearchAbort) {
     currentSearchAbort.abort();
   }
@@ -85,9 +80,7 @@ searchInput.addEventListener("input", () => {
 });
 
 
-// --------- Overlay helper ---------
 function showProfilePreview(username, profilePicture) {
-  // remove any existing overlay
   const old = document.querySelector(".profile-preview-overlay");
   if (old) old.remove();
 
@@ -104,7 +97,7 @@ function showProfilePreview(username, profilePicture) {
 
   document.body.appendChild(overlay);
 
-  // Close events
+ 
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay || e.target.classList.contains("profile-preview-close")) {
       overlay.remove();

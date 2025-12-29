@@ -8,7 +8,6 @@ public interface PostDAO {
 
     List<Post> findByUser(int userId) throws Exception;
 
-    List<Post> findAllForFeed() throws Exception;  // e.g. newest first
-
+    List<Post> findAllForFeed() throws Exception;  
     boolean deletePost(long postId, int userId) throws Exception;
 }

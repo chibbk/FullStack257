@@ -53,12 +53,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  // initial mode
   setMode("login");
 
   if (modal) {
-    // Optional: hide by default to avoid flash
-    // modal.style.display = "none";
+    modal.style.display = "none";
 
     fetch("whoami")
       .then((res) => (res.ok ? res.json() : { authenticated: false }))
@@ -94,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
   email.addEventListener("input", () => email.setCustomValidity(""));
   passwordInput.addEventListener("input", () => passwordInput.setCustomValidity(""));
 
-  // Let the servlet handle actual auth, just block obviously invalid input
   form.addEventListener("submit", (event) => {
     const emailVal = (email.value || "").trim();
     const pwdVal = (passwordInput.value || "").trim();
@@ -121,10 +118,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       nameInput.setCustomValidity("");
     }
-    // If we reach here, the browser submits the form to /login or /signup.
   });
 
-  // Logout links → call /logout servlet
   const logoutButtons = document.querySelectorAll(".logout-link");
   logoutButtons.forEach((btn) => {
     btn.addEventListener("click", (event) => {

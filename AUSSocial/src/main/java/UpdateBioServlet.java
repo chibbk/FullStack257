@@ -35,7 +35,6 @@ public class UpdateBioServlet extends HttpServlet {
         String bio = request.getParameter("bio");
         if (bio == null) bio = "";
 
-        // optional: limit length
         if (bio.length() > 1000) {
             bio = bio.substring(0, 1000);
         }

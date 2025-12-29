@@ -121,7 +121,6 @@ public class PostDAOImpl implements PostDAO {
         }
     }
 
-    // Helper: map a row into a Post object
     private Post mapRow(ResultSet rs) throws SQLException {
         Post p = new Post();
         p.setId(rs.getLong("id"));

@@ -25,14 +25,13 @@ public class UserSearchServlet extends HttpServlet {
 
         try (PrintWriter out = response.getWriter()) {
             if (q.isEmpty()) {
-                // Empty query -> empty array
                 out.write("[]");
                 return;
             }
 
             List<User> users = userDAO.searchByUsername(q);
 
-            // Build a small JSON array: [{ "id": 1, "username": "TestUser" }, ...]
+            //bulids a small JSON array: [{ "id": 1, "username": "TestUser" }, ...]
             StringBuilder sb = new StringBuilder();
             sb.append("[");
 
@@ -61,7 +60,6 @@ public class UserSearchServlet extends HttpServlet {
         }
     }
 
-    // Same helper style as FeedServlet / AnnouncementsServlet
     private String json(String s) {
         if (s == null) return "null";
         return "\"" + s

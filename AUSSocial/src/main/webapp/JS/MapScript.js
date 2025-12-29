@@ -1,4 +1,3 @@
-// === Same timeAgoFromIso as HomeScript / AnnouncementScript ===
 function timeAgoFromIso(raw) {
   if (raw === null || raw === undefined || raw === "") return "";
 
@@ -6,17 +5,14 @@ function timeAgoFromIso(raw) {
   const now = Date.now();
 
   if (typeof raw === "number") {
-    // If it's small (10 digits-ish), assume seconds; otherwise ms
     ts = raw < 1e12 ? raw * 1000 : raw;
   } else {
     const s = String(raw).trim();
 
-    // Pure digits in string → epoch
     if (/^\d+$/.test(s)) {
       const n = Number(s);
       ts = n < 1e12 ? n * 1000 : n;
     } else {
-      // MySQL style: "YYYY-MM-DD HH:MM:SS.0" or without .0, or with T
       const m = s.match(
         /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})(?:\.\d+)?$/
       );
@@ -28,18 +24,15 @@ function timeAgoFromIso(raw) {
         const min   = Number(m[5]);
         const sec   = Number(m[6]);
 
-        // First, interpret as *local* time
         ts = new Date(year, month, day, hour, min, sec).getTime();
 
-        // If this appears several hours *ahead* of now, treat that as
-        // a timezone offset and correct it (e.g. DB is UTC+8, browser UTC+4)
+
         const aheadMs = ts - now;
         if (aheadMs > 5 * 60 * 1000 && aheadMs < 12 * 60 * 60 * 1000) {
           const offsetHours = Math.round(aheadMs / (60 * 60 * 1000));
           ts -= offsetHours * 60 * 60 * 1000;
         }
       } else {
-        // Generic ISO string fallback
         const normalized = s.replace(" ", "T");
         ts = new Date(normalized).getTime();
       }
@@ -50,7 +43,6 @@ function timeAgoFromIso(raw) {
 
   let diffSec = Math.floor((now - ts) / 1000);
 
-  // Final safety clamp: never show negative
   if (diffSec < 0) diffSec = 0;
 
   if (diffSec < 60) return diffSec + "s ago";
@@ -62,12 +54,10 @@ function timeAgoFromIso(raw) {
   return days + "d ago";
 }
 
-// All posts loaded from backend feed (not from sessionStorage anymore)
 let allPosts = [];
 let eventsLoaded = false;
 let lastSelectedBuilding = null;
 
-// Load all posts once from /feed and cache them
 async function loadEventsFromBackend() {
   if (eventsLoaded) return;
 
@@ -85,8 +75,6 @@ async function loadEventsFromBackend() {
 
     const data = await res.json();
 
-    // /feed returns a JSON array: [{ id, userId, title, body, category, location, building, ... }, ...]
-    // We store all posts, and later filter to category === "Event".
     allPosts = Array.isArray(data) ? data : [];
     eventsLoaded = true;
   } catch (err) {
@@ -94,16 +82,13 @@ async function loadEventsFromBackend() {
   }
 }
 
-// Quick create event button – remember last selected building so create.html can prefill it
 document.getElementById("quickCreateEvent").addEventListener("click", () => {
   if (lastSelectedBuilding) {
-    // Save selected building temporarily for create.html
     sessionStorage.setItem("prefill_building", lastSelectedBuilding);
   }
   window.location.href = "create.html";
 });
 
-// When a map spot is clicked, load events (if not already loaded), then show modal
 document.querySelectorAll(".map-spot").forEach(spot => {
   spot.addEventListener("click", async () => {
     const building = spot.dataset.label;
@@ -111,7 +96,6 @@ document.querySelectorAll(".map-spot").forEach(spot => {
     lastSelectedBuilding = building;
     document.getElementById("buildingTitle").textContent = building;
 
-    // Ensure we have the latest data from backend
     await loadEventsFromBackend();
 
     renderBuildingEvents(building);
@@ -119,12 +103,10 @@ document.querySelectorAll(".map-spot").forEach(spot => {
   });
 });
 
-// Close modal button
 document.getElementById("closeBuilding").addEventListener("click", () => {
   document.getElementById("buildingModal").style.display = "none";
 });
 
-// Close modal when clicking outside content
 window.addEventListener("click", (e) => {
   if (e.target.id === "buildingModal") {
     document.getElementById("buildingModal").style.display = "none";
@@ -135,7 +117,6 @@ function renderBuildingEvents(building) {
   const container = document.getElementById("mapEventsList");
   container.innerHTML = "";
 
-  // Filter posts from backend: only Events, and only this building
   const events = allPosts.filter(p =>
     p.category === "Event" &&
     (p.building || "").toLowerCase() === building.toLowerCase()
@@ -160,7 +141,6 @@ function renderBuildingEvents(building) {
       `;
     }
 
-    // 1) Prefer explicit event date/time if present
     let datePart = ev.eventDate || "";
     let timePart = ev.eventTime || "";
 
@@ -168,7 +148,6 @@ function renderBuildingEvents(building) {
       timePart = timePart.substring(0, 5); // "HH:MM"
     }
 
-    // 2) If there is no explicit event date/time, fall back to "x ago"
     let metaLabel;
     if (datePart || timePart) {
       metaLabel = `${datePart ? datePart : ""} ${timePart ? "@ " + timePart : ""}`;

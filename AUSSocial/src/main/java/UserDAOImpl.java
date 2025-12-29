@@ -115,7 +115,8 @@ public class UserDAOImpl implements UserDAO {
 
    
 
-    // Simple SHA-256 hashing for passwords
+    //SHA-256 hashing for passwords because why not
+    //https://www.baeldung.com/sha-256-hashing-java
     public static String hashPassword(String plain) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

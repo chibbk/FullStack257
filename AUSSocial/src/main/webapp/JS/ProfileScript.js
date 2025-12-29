@@ -1,5 +1,4 @@
 // Chihab - b00099008
-// Elements
 const editProfileModal = document.getElementById("editProfileModal");
 const editBtn = document.getElementById("editProfileBtn");
 const cancelEditBtn = document.getElementById("cancelEdit");
@@ -14,12 +13,9 @@ const profileNameEl = document.getElementById("profileName");
 
 const defaultPfp = "images/DefaultPfp.jpg";
 
-// handling reset to default
 let useDefaultPfp = false;
 
-// =============================
-// Load profile from backend
-// =============================
+
 async function loadProfileFromServer() {
   try {
     const res = await fetch("whoami", {
@@ -30,7 +26,6 @@ async function loadProfileFromServer() {
     const data = await res.json();
     console.log("whoami data:", data);
 
-    // use authenticated, not loggedIn
     if (!data.authenticated) {
       profileNameEl.textContent = "Guest";
       bioTxt.textContent = "No bio added yet.";
@@ -65,9 +60,6 @@ async function loadProfileFromServer() {
 }
 
 
-// =============================
-// Open/close modal
-// =============================
 editBtn?.addEventListener("click", () => {
   editProfileModal.style.display = "flex";
   editBioInput.value =
@@ -75,7 +67,6 @@ editBtn?.addEventListener("click", () => {
   editBioInput.focus();
   useDefaultPfp = false;
 
-  // sync preview with REAL pfp when modal opens
   pfpPreview.src = pfpImg.src;
 });
 
@@ -89,9 +80,7 @@ window.addEventListener("click", (e) => {
   if (e.target === editProfileModal) closeEditModal();
 });
 
-// =============================
-// PFP upload + preview (no storage)
-// =============================
+
 uploadInput?.addEventListener("change", () => {
   const file = uploadInput.files?.[0];
   if (file) {
@@ -108,9 +97,7 @@ resetPfpBtn?.addEventListener("click", () => {
   pfpPreview.src = defaultPfp; // changes applied on Save
 });
 
-// =============================
-// Load posts from backend
-// =============================
+
 const profilePostsEl = document.getElementById("profilePosts");
 
 function escapeHtml(s) {
@@ -168,9 +155,7 @@ async function loadProfilePosts() {
   }
 }
 
-// =============================
-// Delete posts using backend
-// =============================
+
 profilePostsEl?.addEventListener("click", async (e) => {
   const btn = e.target.closest(".delete-post-btn");
   if (!btn) return;
@@ -193,9 +178,7 @@ profilePostsEl?.addEventListener("click", async (e) => {
   }
 });
 
-// =============================
-// Save bio to backend (DB)
-// =============================
+
 async function saveBioToServer(newBio) {
   try {
     const res = await fetch("updateBio", {
@@ -223,13 +206,9 @@ async function saveBioToServer(newBio) {
   }
 }
 
-// =============================
-// Save handler (bio + in-page PFP)
-// =============================
 editForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // PFP apply (still only front-end)
   if (useDefaultPfp) {
     pfpImg.src = defaultPfp;
   } else if (uploadInput.files?.[0]) {
@@ -240,11 +219,9 @@ editForm?.addEventListener("submit", async (e) => {
     };
     reader.readAsDataURL(file);
   } else {
-    // no change → keep the preview src
     pfpImg.src = pfpPreview.src;
   }
 
-  // Bio: update UI and send to DB
   const newBio = editBioInput.value.trim();
   const finalBio = newBio === "" ? "No bio added yet." : newBio;
   bioTxt.textContent = finalBio;
@@ -254,9 +231,7 @@ editForm?.addEventListener("submit", async (e) => {
   closeEditModal();
 });
 
-// =============================
-// On page load
-// =============================
+
 document.addEventListener("DOMContentLoaded", () => {
   loadProfileFromServer();
   loadProfilePosts();

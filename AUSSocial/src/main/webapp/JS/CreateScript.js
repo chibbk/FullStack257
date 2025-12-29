@@ -1,4 +1,3 @@
-// Ahmed Abdelmohsen - B00099927
 // ---------- Helpers ----------
     const $$ = (sel, root=document) => root.querySelector(sel);
     const $$$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
@@ -83,6 +82,5 @@
 	    if (tagsField) {
 	      tagsField.value = tags.join(",");
 	    }
-	    // Let the browser submit normally to the servlet
 	  });
 	}

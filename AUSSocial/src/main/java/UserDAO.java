@@ -15,6 +15,5 @@ public interface UserDAO {
     boolean updateBio(int userId, String bio) throws Exception;
 
 
-    // NEW:
     List<User> searchByUsername(String query) throws Exception;
 }

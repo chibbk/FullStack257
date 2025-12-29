@@ -70,7 +70,7 @@ public class FeedServlet extends HttpServlet {
         }
     }
 
-    // Simple JSON string helper
+    //simple JSON string helper
     private String json(String s) {
         if (s == null) return "null";
         return "\"" + s

@@ -14,7 +14,6 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    // Getters & setters
 
     public int getId() {
         return id;

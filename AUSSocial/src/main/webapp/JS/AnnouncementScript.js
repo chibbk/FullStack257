@@ -1,5 +1,3 @@
-// Karim Hamdan- B00100281
-
 const anncListEl = document.getElementById("anncList");
 
 function escapeHtml(s) {
@@ -19,17 +17,14 @@ function timeAgoFromIso(raw) {
   const now = Date.now();
 
   if (typeof raw === "number") {
-    // If it's small (10 digits-ish), assume seconds; otherwise ms
     ts = raw < 1e12 ? raw * 1000 : raw;
   } else {
     const s = String(raw).trim();
 
-    // Pure digits in string → epoch
     if (/^\d+$/.test(s)) {
       const n = Number(s);
       ts = n < 1e12 ? n * 1000 : n;
     } else {
-      // MySQL style: "YYYY-MM-DD HH:MM:SS.0" or without .0, or with T
       const m = s.match(
         /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2}):(\d{2})(?:\.\d+)?$/
       );
@@ -41,18 +36,15 @@ function timeAgoFromIso(raw) {
         const min   = Number(m[5]);
         const sec   = Number(m[6]);
 
-        // First, interpret as *local* time
         ts = new Date(year, month, day, hour, min, sec).getTime();
 
-        // If this appears several hours *ahead* of now, treat that as
-        // a timezone offset and correct it (e.g. DB is UTC+8, browser UTC+4)
+
         const aheadMs = ts - now;
         if (aheadMs > 5 * 60 * 1000 && aheadMs < 12 * 60 * 60 * 1000) {
           const offsetHours = Math.round(aheadMs / (60 * 60 * 1000));
           ts -= offsetHours * 60 * 60 * 1000;
         }
       } else {
-        // Generic ISO string fallback
         const normalized = s.replace(" ", "T");
         ts = new Date(normalized).getTime();
       }
@@ -63,7 +55,6 @@ function timeAgoFromIso(raw) {
 
   let diffSec = Math.floor((now - ts) / 1000);
 
-  // Final safety clamp: never show negative
   if (diffSec < 0) diffSec = 0;
 
   if (diffSec < 60) return diffSec + "s ago";
