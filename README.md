@@ -5,7 +5,7 @@ American University of Sharjah
 
 ## Overview
 AUS Social is a private, AUS‑only community platform that centralizes announcements, events, Q&A, marketplace posts, and student interactions into a single, responsive web application.
-The platform is built using **Jakarta Servlets**, **JDBC**, **MySQL**, **HTML/CSS/JS**, and **Bootstrap 5**, forming a lightweight but fully functional full‑stack social system.
+The platform is built using **Jakarta Servlets**, **JDBC**, **MySQL**, **HTML/CSS/JS**, and **Bootstrap 5**, forming a fully functional full‑stack social system.
 
 ---
 
