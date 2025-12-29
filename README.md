@@ -67,7 +67,6 @@ The platform is built using **Jakarta Servlets**, **JDBC**, **MySQL**, **HTML/CS
 | **Backend** | Jakarta Servlets, Java, JDBC |
 | **Database** | MySQL 8.0 |
 | **Security** | SHA‑256 password hashing, session authentication |
-| **Architecture** | DAO pattern, MVC‑style servlet routing |
 
 ---
 
@@ -107,59 +106,48 @@ The platform is built using **Jakarta Servlets**, **JDBC**, **MySQL**, **HTML/CS
 | post_id | BIGINT FK | PK (user_id, post_id) |
 | created_at | TIMESTAMP | Default now |
 
-The schema supports:
-- Cascading deletes  
-- Efficient feed queries  
-- Idempotent like toggling  
-- Category‑based filtering  
-
 ---
 
 ## Backend Architecture
 
 ### **Authentication Servlets**
-- `SignupServlet` — Create new AUS‑verified users  
-- `LoginServlet` — Validate credentials & start session  
-- `LogoutServlet` — End session  
-- `WhoAmIServlet` — Return current user info  
+- `SignupServlet`: Create new AUS‑verified users  
+- `LoginServlet`: Validate credentials & start session  
+- `LogoutServlet`: End session  
+- `WhoAmIServlet`: Return current user info  
 
 ### **Post Servlets**
-- `CreatePostServlet` — Insert new posts  
-- `FeedServlet` — Return full feed as JSON  
-- `AnnouncementsServlet` — Filtered announcements feed  
-- `MyPostsServlet` — Posts belonging to logged‑in user  
-- `DeletePostServlet` — Delete with ownership check  
-- `LikePostServlet` — Toggle likes & update like_count  
+- `CreatePostServlet`: Insert new posts  
+- `FeedServlet`: Return full feed as JSON  
+- `AnnouncementsServlet`: Filtered announcements feed  
+- `MyPostsServlet`: Posts belonging to logged‑in user  
+- `DeletePostServlet`: Delete with ownership check  
+- `LikePostServlet`: Toggle likes & update like_count  
 
 ### **User Servlets**
-- `UserSearchServlet` — Username search  
-- `UpdateBioServlet` — Update profile bio  
-
-### **DAO Layer**
-- `UserDAO` / `UserDAOImpl`  
-- `PostDAO` / `PostDAOImpl`  
-- `DBConnection` — Centralized MySQL connection builder  
+- `UserSearchServlet`: Username search  
+- `UpdateBioServlet`: Update profile bio  
 
 ---
 
 ## Frontend Structure
 
 ### HTML Pages
-- `home.html` — Main feed  
-- `create.html` — Post creation  
-- `announcements.html` — Announcements feed  
-- `map.html` — Interactive campus map  
-- `profile.html` — User profile  
+- `home.html`: Main feed  
+- `create.html`: Post creation  
+- `announcements.html`: Announcements feed  
+- `map.html`: Interactive campus map  
+- `profile.html`: User profile  
 - Shared navigation (sidebar + bottom nav)
 
 ### JavaScript Modules
-- `HomeScript.js` — Feed rendering, pagination, likes  
-- `CreateScript.js` — Dynamic form, tag chips, preview  
-- `AnnouncementScript.js` — Announcement feed  
-- `MapScript.js` — Building hotspots & event filtering  
-- `ProfileScript.js` — Bio editing & post management  
-- `SearchScript.js` — Live user search  
-- `FormScript.js` — Login/signup modal logic  
+- `HomeScript.js`: Feed rendering, pagination, likes  
+- `CreateScript.js`: Dynamic form, tag chips, preview  
+- `AnnouncementScript.js`: Announcement feed  
+- `MapScript.js`: Building hotspots & event filtering  
+- `ProfileScript.js`: Bio editing & post management  
+- `SearchScript.js`: Live user search  
+- `FormScript.js`: Login/signup modal logic  
 
 ## References
 ChatGPT was used to assist with servlet implementation, FetchAPI usage, and frontend styling. Comments were added where appropriate.
