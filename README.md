@@ -1,6 +1,6 @@
 # AUS Social  
-A Private Community Platform for AUS Students  
-CMP 257: Web Application Programming  
+A Private Community Model Platform for AUS Students  
+CMP 257: Web Application Programming Final Course Project
 American University of Sharjah
 
 ## Overview
